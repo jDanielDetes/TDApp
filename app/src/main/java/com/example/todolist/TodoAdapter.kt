@@ -38,11 +38,29 @@ class TodoAdapter (
         }
     }
 
+    fun addTodo(todo: Todo) {
+        todos.add(todo)
+        notifyItemInserted(todos.size - 1) // Notifies recycler view that a new item has been added
+    }
+
+    fun deleteDoneTodos(){
+        todos.removeAll{todo ->
+            todo.isChecked
+        }
+        notifyDataSetChanged() //updates list
+    }
+
+
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         val currentTodo = todos[position]
         holder.itemView.apply {
             tv_TodoTitle.text = currentTodo.title
             cb_Done.isChecked = currentTodo.isChecked
+            toggleStrikeThrough(tv_TodoTitle,currentTodo.isChecked)
+            cb_Done.setOnCheckedChangeListener { _, isChecked ->
+                toggleStrikeThrough(tv_TodoTitle,isChecked)
+                currentTodo.isChecked= !currentTodo.isChecked
+            }
         }
     }
 }
